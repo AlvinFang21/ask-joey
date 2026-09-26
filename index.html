@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A question for Joey 💌</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="header_text">Joey, do you wanna go out with me?</h1>
+      <div class="gif_container">
+        <img
+          src="https://i.postimg.cc/pdNqPxx1/milk-and-mocha-cute.gif"
+          alt="Cute animated illustration"
+        />
+      </div>
+      <div class="buttons">
+        <button class="btn" id="yesButton">Yes</button>
+        <button class="btn" id="noButton">No</button>
+      </div>
+    </div>
+
+    <script>
+      const yesButton = document.getElementById("yesButton");
+      const noButton = document.getElementById("noButton");
+
+      const noLines = [
+        "Are you sure?",
+        "Really sure??",
+        "Think again 🥺",
+        "Pretty please?",
+        "Don't do this to me",
+        "I'll be very sad...",
+        "I'm gonna cry 😭",
+        "You're breaking my heart 💔",
+        "Just click Yes!",
+      ];
+      let tries = 0;
+
+      yesButton.addEventListener("click", () => {
+        window.location.href = "Yes.html";
+      });
+
+      function moveButton(e) {
+        if (e) e.preventDefault();
+        if (noButton.style.position !== "fixed") {
+          // keep an empty spot so the Yes button doesn't shift over
+          const spacer = document.createElement("div");
+          spacer.style.width = `${noButton.offsetWidth}px`;
+          noButton.before(spacer);
+        }
+
+        // No gets more desperate, Yes gets bigger
+        noButton.textContent = noLines[Math.min(tries, noLines.length - 1)];
+        tries++;
+        yesButton.style.transform = `scale(${Math.min(1 + tries * 0.15, 2.5)})`;
+
+        const pad = 10;
+        const maxX = window.innerWidth - noButton.offsetWidth - pad;
+        const maxY = window.innerHeight - noButton.offsetHeight - pad;
+        noButton.style.position = "fixed";
+        noButton.style.left = `${pad + Math.random() * Math.max(maxX - pad, 0)}px`;
+        noButton.style.top = `${pad + Math.random() * Math.max(maxY - pad, 0)}px`;
+      }
+
+      noButton.addEventListener("mouseover", moveButton);
+      noButton.addEventListener("touchstart", moveButton, { passive: false });
+      noButton.addEventListener("click", moveButton);
+    </script>
+  </body>
+</html>

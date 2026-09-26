@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our date 📅</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- step 1: pick a place -->
+      <form class="card" id="pickForm" novalidate>
+        <div class="save-date">
+          <div class="label">Save the date</div>
+          <p class="date">Monday, 12 October 2026</p>
+        </div>
+
+        <p class="question">Where should we go? 🍽️</p>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="place" value="Chaang Cafe" />
+            <span class="title">Chaang Cafe</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="place" value="The Curly Tail" />
+            <span class="title">The Curly Tail</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="place" value="Hannam BBQ" />
+            <span class="title">Hannam BBQ</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="place" value="Intention" />
+            <span class="title">Intention</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="place" value="Japanese Food" />
+            <span class="title">Japanese Food</span>
+            <div class="sub">Kota or anywhere else</div>
+            <input
+              class="extra"
+              type="text"
+              id="japaneseSpot"
+              placeholder="Kota, or somewhere else? (optional)"
+              maxlength="100"
+            />
+          </label>
+          <label class="option">
+            <input type="radio" name="place" value="Others" />
+            <span class="title">Others</span>
+            <div class="sub">Please state your answer</div>
+            <input
+              class="extra"
+              type="text"
+              id="otherSpot"
+              placeholder="Type where you'd like to go..."
+              maxlength="100"
+            />
+          </label>
+        </div>
+
+        <p class="error" id="error"></p>
+        <div class="buttons" style="margin-top: 10px">
+          <button class="btn" type="submit">It's a date! 💕</button>
+        </div>
+      </form>
+
+      <!-- step 2: confirmation -->
+      <div class="hidden" id="done">
+        <h1 class="header_text">It's a date! 💕</h1>
+        <div class="gif_container">
+          <img
+            src="https://i.postimg.cc/wTDG30TB/yes.gif"
+            alt="Cute animated illustration"
+          />
+        </div>
+        <div class="card" style="text-align: center; margin-top: 20px">
+          <div class="save-date" style="margin-bottom: 8px">
+            <div class="label">Monday, 12 October 2026</div>
+            <p class="date" id="chosen"></p>
+          </div>
+          <p style="margin: 0 0 16px">Send me your answer so I can book it 🥰</p>
+          <div class="buttons" style="margin-top: 0; gap: 12px; flex-wrap: wrap">
+            <a class="btn" id="whatsapp" target="_blank" rel="noopener">Send on WhatsApp</a>
+            <button class="btn" id="copy" type="button">Copy answer</button>
+          </div>
+          <p style="margin: 16px 0 0">
+            <a href="#" id="change" style="color: var(--rose)">Change my answer</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("pickForm");
+      const done = document.getElementById("done");
+      const error = document.getElementById("error");
+      const otherSpot = document.getElementById("otherSpot");
+      const japaneseSpot = document.getElementById("japaneseSpot");
+      let message = "";
+
+      form.addEventListener("change", (e) => {
+        error.textContent = "";
+        // jump straight into the text box when Others / Japanese is picked
+        if (e.target.value === "Others") otherSpot.focus();
+        if (e.target.value === "Japanese Food") japaneseSpot.focus();
+      });
+
+      form.addEventListener("input", () => (error.textContent = ""));
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const picked = form.querySelector('input[name="place"]:checked');
+        if (!picked) {
+          error.textContent = "Pick a place first 🥺";
+          return;
+        }
+
+        let place = picked.value;
+        if (place === "Others") {
+          const typed = otherSpot.value.trim();
+          if (!typed) {
+            error.textContent = "Tell me where you'd like to go 💭";
+            otherSpot.focus();
+            return;
+          }
+          place = typed;
+        } else if (place === "Japanese Food") {
+          const typed = japaneseSpot.value.trim();
+          place = `Japanese Food (${typed || "Kota or anywhere else"})`;
+        }
+
+        document.getElementById("chosen").textContent = place;
+        message = `Yes! It's a date on Monday, 12 October 2026 💕 I pick: ${place}`;
+        document.getElementById("whatsapp").href =
+          "https://wa.me/?text=" + encodeURIComponent(message);
+
+        form.classList.add("hidden");
+        done.classList.remove("hidden");
+        window.scrollTo(0, 0);
+      });
+
+      document.getElementById("copy").addEventListener("click", async (e) => {
+        try {
+          await navigator.clipboard.writeText(message);
+          e.target.textContent = "Copied! ✨";
+        } catch {
+          prompt("Copy this:", message);
+        }
+      });
+
+      document.getElementById("change").addEventListener("click", (e) => {
+        e.preventDefault();
+        done.classList.add("hidden");
+        form.classList.remove("hidden");
+      });
+    </script>
+  </body>
+</html>
